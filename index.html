@@ -1,0 +1,2579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JulesLuvLauncher</title>
+<link rel="icon" type="image/png" href="assets/icon.png">
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+}
+
+:root {
+    --bg: #0b0710;
+    --sidebar: #100a17;
+    --panel: #15101d;
+    --panel2: #1d1427;
+    --border: rgba(255,255,255,.08);
+    --text: #ffffff;
+    --muted: #a69bad;
+    --pink: #ff4fb3;
+    --pink2: #ff79c8;
+    --purple: #9b5cff;
+    --green: #63e69a;
+    --red: #ff5575;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    color: var(--text);
+    background:
+        radial-gradient(circle at 75% 10%, rgba(155,92,255,.14), transparent 32%),
+        radial-gradient(circle at 20% 90%, rgba(255,79,179,.1), transparent 30%),
+        var(--bg);
+}
+
+button,
+input {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+    border: 0;
+}
+
+.auth-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background:
+        radial-gradient(circle at 20% 20%, rgba(255,79,179,.18), transparent 35%),
+        radial-gradient(circle at 80% 80%, rgba(155,92,255,.18), transparent 35%),
+        #09050d;
+}
+
+.auth-screen.hidden {
+    display: none;
+}
+
+.auth-box {
+    width: 100%;
+    max-width: 430px;
+    padding: 35px;
+    border: 1px solid rgba(255,255,255,.09);
+    border-radius: 25px;
+    background:
+        radial-gradient(circle at 100% 0%, rgba(155,92,255,.18), transparent 40%),
+        radial-gradient(circle at 0% 100%, rgba(255,79,179,.13), transparent 40%),
+        #140d1b;
+    box-shadow:
+        0 30px 100px rgba(0,0,0,.65),
+        0 0 80px rgba(255,79,179,.06);
+    animation: authIn .45s cubic-bezier(.2,.8,.2,1);
+}
+
+@keyframes authIn {
+    from {
+        opacity: 0;
+        transform: translateY(18px) scale(.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.auth-brand {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.auth-logo {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 17px;
+    display: block;
+    object-fit: cover;
+    border-radius: 20px;
+    box-shadow: 0 12px 35px rgba(255,79,179,.22);
+}
+
+.auth-brand h1 {
+    font-size: 25px;
+    font-weight: 850;
+    letter-spacing: -.8px;
+}
+
+.auth-brand p {
+    margin-top: 7px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.auth-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+    padding: 5px;
+    margin-bottom: 23px;
+    border-radius: 13px;
+    background: rgba(255,255,255,.035);
+    border: 1px solid var(--border);
+}
+
+.auth-tab {
+    height: 39px;
+    border-radius: 9px;
+    color: var(--muted);
+    background: transparent;
+    font-size: 12px;
+    font-weight: 750;
+    transition: .2s;
+}
+
+.auth-tab.active {
+    color: white;
+    background: linear-gradient(
+        135deg,
+        rgba(255,79,179,.2),
+        rgba(155,92,255,.2)
+    );
+}
+
+.auth-form {
+    display: none;
+}
+
+.auth-form.active {
+    display: block;
+}
+
+.auth-field {
+    margin-bottom: 15px;
+}
+
+.auth-field label {
+    display: block;
+    margin-bottom: 7px;
+    color: #ddd4e2;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.auth-input {
+    width: 100%;
+    height: 48px;
+    padding: 0 14px;
+    outline: none;
+    color: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: rgba(255,255,255,.045);
+    transition: .2s;
+}
+
+.auth-input::placeholder {
+    color: #756a7d;
+}
+
+.auth-input:focus {
+    border-color: rgba(255,79,179,.5);
+    box-shadow: 0 0 0 3px rgba(255,79,179,.07);
+}
+
+.auth-submit {
+    width: 100%;
+    height: 48px;
+    margin-top: 5px;
+    border-radius: 12px;
+    color: white;
+    background: linear-gradient(135deg,var(--pink),var(--purple));
+    box-shadow: 0 10px 30px rgba(255,79,179,.18);
+    font-size: 13px;
+    font-weight: 800;
+    transition: .2s;
+}
+
+.auth-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 35px rgba(255,79,179,.25);
+}
+
+.auth-error {
+    min-height: 18px;
+    margin-top: 10px;
+    color: var(--red);
+    text-align: center;
+    font-size: 11px;
+}
+
+.auth-success {
+    min-height: 18px;
+    margin-top: 10px;
+    color: var(--green);
+    text-align: center;
+    font-size: 11px;
+}
+
+.auth-footer {
+    margin-top: 22px;
+    color: #756a7d;
+    text-align: center;
+    font-size: 10px;
+}
+
+.auth-footer span {
+    color: var(--pink2);
+}
+
+.app {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.sidebar {
+    width: 255px;
+    height: 100%;
+    padding: 20px 13px;
+    flex-shrink: 0;
+    background: rgba(16,10,23,.97);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    transition: .35s ease;
+    z-index: 20;
+}
+
+.sidebar.collapsed {
+    width: 80px;
+}
+
+.brand {
+    height: 52px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 8px;
+    margin-bottom: 25px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.brand-image {
+    width: 39px;
+    height: 39px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    object-fit: cover;
+    box-shadow: 0 7px 25px rgba(255,79,179,.25);
+}
+
+.brand-name {
+    font-size: 16px;
+    font-weight: 800;
+    transition: .2s;
+}
+
+.sidebar.collapsed .brand-name {
+    opacity: 0;
+    transform: translateX(-10px);
+}
+
+.nav {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.nav-button {
+    height: 50px;
+    width: 100%;
+    padding: 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    color: var(--muted);
+    background: transparent;
+    border-radius: 13px;
+    text-align: left;
+    transition: .2s;
+    position: relative;
+}
+
+.nav-button:hover {
+    color: white;
+    background: rgba(255,255,255,.055);
+    transform: translateX(2px);
+}
+
+.nav-button.active {
+    color: white;
+    background: linear-gradient(
+        135deg,
+        rgba(255,79,179,.19),
+        rgba(155,92,255,.15)
+    );
+}
+
+.nav-button.active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 10px;
+    bottom: 10px;
+    width: 3px;
+    border-radius: 4px;
+    background: linear-gradient(var(--pink),var(--purple));
+    box-shadow: 0 0 12px rgba(255,79,179,.7);
+}
+
+.nav-icon {
+    width: 21px;
+    height: 21px;
+    flex-shrink: 0;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+}
+
+.nav-text {
+    white-space: nowrap;
+    font-size: 13px;
+    font-weight: 650;
+    transition: .2s;
+}
+
+.sidebar.collapsed .nav-text {
+    opacity: 0;
+    transform: translateX(-10px);
+}
+
+.sidebar-footer {
+    margin-top: auto;
+    border-top: 1px solid var(--border);
+    padding-top: 15px;
+}
+
+.user-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    overflow: hidden;
+}
+
+.user-avatar {
+    width: 37px;
+    height: 37px;
+    flex-shrink: 0;
+    object-fit: cover;
+    border-radius: 11px;
+}
+
+.user-info {
+    white-space: nowrap;
+    transition: .2s;
+}
+
+.user-name {
+    font-size: 13px;
+    font-weight: 750;
+}
+
+.user-status {
+    margin-top: 2px;
+    color: var(--green);
+    font-size: 10px;
+}
+
+.sidebar.collapsed .user-info {
+    opacity: 0;
+}
+
+.main {
+    min-width: 0;
+    flex: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.topbar {
+    height: 76px;
+    padding: 0 28px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    background: rgba(11,7,16,.45);
+    backdrop-filter: blur(20px);
+}
+
+.top-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.menu-button {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    transition: .2s;
+}
+
+.menu-button:hover {
+    transform: scale(1.05);
+}
+
+.menu-button img {
+    width: 20px;
+    height: 20px;
+    filter: brightness(0) invert(1);
+}
+
+.page-title {
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 7px 5px 11px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: rgba(255,255,255,.035);
+}
+
+.profile img {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.profile-name {
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 32px;
+}
+
+.page {
+    display: none;
+    max-width: 1250px;
+    margin: auto;
+    animation: pageIn .35s ease;
+}
+
+.page.active {
+    display: block;
+}
+
+@keyframes pageIn {
+    from {
+        opacity: 0;
+        transform: translateY(9px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hero {
+    min-height: 305px;
+    padding: 43px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+    border-radius: 25px;
+    border: 1px solid var(--border);
+    background:
+        radial-gradient(circle at 85% 20%, rgba(155,92,255,.3), transparent 35%),
+        radial-gradient(circle at 15% 100%, rgba(255,79,179,.2), transparent 35%),
+        var(--panel);
+    box-shadow: 0 20px 60px rgba(0,0,0,.3);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 680px;
+}
+
+.eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 11px;
+    margin-bottom: 17px;
+    border-radius: 99px;
+    color: var(--pink2);
+    background: rgba(255,79,179,.1);
+    border: 1px solid rgba(255,79,179,.18);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 10px var(--green);
+}
+
+.hero h1 {
+    font-size: clamp(38px,5vw,60px);
+    line-height: 1;
+    letter-spacing: -2.5px;
+}
+
+.gradient {
+    color: transparent;
+    background: linear-gradient(100deg,#fff,var(--pink2),var(--purple));
+    background-clip: text;
+    -webkit-background-clip: text;
+}
+
+.hero p {
+    margin-top: 18px;
+    max-width: 590px;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.65;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+.primary,
+.secondary,
+.danger {
+    height: 43px;
+    padding: 0 17px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 11px;
+    font-size: 12px;
+    font-weight: 750;
+    transition: .2s;
+}
+
+.primary {
+    color: white;
+    background: linear-gradient(135deg,var(--pink),var(--purple));
+    box-shadow: 0 8px 25px rgba(255,79,179,.2);
+}
+
+.secondary {
+    color: white;
+    background: var(--panel2);
+    border: 1px solid var(--border);
+}
+
+.danger {
+    color: white;
+    background: rgba(255,85,117,.12);
+    border: 1px solid rgba(255,85,117,.2);
+}
+
+.primary:hover,
+.secondary:hover,
+.danger:hover {
+    transform: translateY(-2px);
+}
+
+.primary:disabled,
+.secondary:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.button-icon {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 30px 2px 14px;
+}
+
+.section-header h2 {
+    font-size: 18px;
+}
+
+.section-header span {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.quick-grid {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 14px;
+}
+
+.quick-card {
+    padding: 22px;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: var(--panel);
+    transition: .25s;
+    cursor: pointer;
+}
+
+.quick-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255,79,179,.3);
+}
+
+.quick-icon {
+    width: 45px;
+    height: 45px;
+    padding: 11px;
+    margin-bottom: 18px;
+    border-radius: 13px;
+    background: linear-gradient(
+        135deg,
+        rgba(255,79,179,.17),
+        rgba(155,92,255,.17)
+    );
+}
+
+.quick-icon img {
+    width: 100%;
+    height: 100%;
+    filter: brightness(0) invert(1);
+}
+
+.quick-card h3 {
+    font-size: 14px;
+    margin-bottom: 7px;
+}
+
+.quick-card p {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+.download-header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 14px;
+}
+
+.download-list,
+.library-list {
+    display: grid;
+    gap: 13px;
+}
+
+.download-card,
+.app-card {
+    padding: 19px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: var(--panel);
+}
+
+.item-icon {
+    width: 46px;
+    height: 46px;
+    padding: 12px;
+    flex-shrink: 0;
+    border-radius: 13px;
+    background: var(--panel2);
+}
+
+.item-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+}
+
+.item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.item-title {
+    font-size: 14px;
+    font-weight: 750;
+}
+
+.item-description {
+    margin-top: 5px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.app-preview {
+    width: 235px;
+    height: 125px;
+    flex-shrink: 0;
+    overflow: hidden;
+    position: relative;
+    border-radius: 13px;
+    background-image:
+        linear-gradient(90deg,rgba(8,4,12,.15),rgba(8,4,12,.6)),
+        url("assets/julesespmenu.png");
+    background-size: cover;
+    background-position: center;
+}
+
+.app-preview-overlay {
+    position: absolute;
+    inset: 0;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background: linear-gradient(transparent,rgba(0,0,0,.8));
+}
+
+.app-preview-name {
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.app-preview-file {
+    margin-top: 3px;
+    color: #d6cbd9;
+    font-size: 10px;
+}
+
+.app-details {
+    flex: 1;
+}
+
+.app-name {
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.file-name {
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.license {
+    margin-top: 9px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 11px;
+}
+
+.license-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+}
+
+.license.expired {
+    color: var(--red);
+}
+
+.license.expired .license-dot {
+    background: var(--red);
+    box-shadow: 0 0 8px var(--red);
+}
+
+.app-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.app-card.locked {
+    opacity: .58;
+}
+
+.app-card.locked .app-preview {
+    filter: grayscale(.7);
+}
+
+.empty {
+    padding: 60px 20px;
+    text-align: center;
+    color: var(--muted);
+    border: 1px dashed var(--border);
+    border-radius: 18px;
+}
+
+.empty img {
+    width: 35px;
+    height: 35px;
+    margin-bottom: 13px;
+    filter: brightness(0) invert(1);
+    opacity: .55;
+}
+
+.settings-list {
+    display: grid;
+    gap: 12px;
+}
+
+.setting-title {
+    margin: 30px 0 14px;
+    font-size: 15px;
+}
+
+.setting-card {
+    min-height: 75px;
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    border-radius: 17px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+}
+
+.setting-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.setting-name {
+    font-size: 13px;
+    font-weight: 750;
+}
+
+.setting-description {
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.toggle {
+    position: relative;
+    width: 47px;
+    height: 26px;
+}
+
+.toggle input {
+    display: none;
+}
+
+.slider {
+    position: absolute;
+    inset: 0;
+    border-radius: 99px;
+    background: #302638;
+    cursor: pointer;
+    transition: .25s;
+}
+
+.slider::before {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    left: 3px;
+    top: 3px;
+    border-radius: 50%;
+    background: white;
+    transition: .25s;
+}
+
+.toggle input:checked + .slider {
+    background: linear-gradient(135deg,var(--pink),var(--purple));
+}
+
+.toggle input:checked + .slider::before {
+    transform: translateX(21px);
+}
+
+.modal-background {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(3,1,7,.72);
+    backdrop-filter: blur(13px);
+}
+
+.modal-background.open {
+    display: flex;
+    animation: fadeIn .2s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.redeem-modal {
+    width: 100%;
+    max-width: 460px;
+    padding: 31px;
+    position: relative;
+    border: 1px solid rgba(255,79,179,.18);
+    border-radius: 24px;
+    background:
+        radial-gradient(circle at 100% 0%,rgba(155,92,255,.19),transparent 40%),
+        radial-gradient(circle at 0% 100%,rgba(255,79,179,.13),transparent 35%),
+        #160e1e;
+    box-shadow: 0 30px 90px rgba(0,0,0,.6);
+    animation: modalIn .3s cubic-bezier(.2,.8,.2,1);
+}
+
+@keyframes modalIn {
+    from {
+        opacity: 0;
+        transform: scale(.93) translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.close-modal {
+    position: absolute;
+    right: 17px;
+    top: 17px;
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    border-radius: 9px;
+    color: #c6bac9;
+    background: rgba(255,255,255,.05);
+    font-size: 18px;
+}
+
+.redeem-icon {
+    width: 55px;
+    height: 55px;
+    padding: 14px;
+    margin-bottom: 18px;
+    border-radius: 16px;
+    background: linear-gradient(
+        135deg,
+        rgba(255,79,179,.18),
+        rgba(155,92,255,.2)
+    );
+}
+
+.redeem-icon img {
+    width: 100%;
+    height: 100%;
+    filter: brightness(0) invert(1);
+}
+
+.redeem-modal h2 {
+    font-size: 26px;
+    letter-spacing: -.8px;
+}
+
+.redeem-modal p {
+    margin-top: 8px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.key-input {
+    width: 100%;
+    height: 50px;
+    margin-top: 22px;
+    padding: 0 15px;
+    color: white;
+    outline: none;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,.045);
+    text-align: center;
+    letter-spacing: 1px;
+    font-size: 13px;
+}
+
+.key-input:focus {
+    border-color: rgba(255,79,179,.5);
+    box-shadow: 0 0 0 3px rgba(255,79,179,.07);
+}
+
+.key-error {
+    min-height: 18px;
+    margin-top: 8px;
+    color: var(--red);
+    text-align: center;
+    font-size: 11px;
+}
+
+.redeem-submit {
+    width: 100%;
+    height: 47px;
+    margin-top: 8px;
+    border-radius: 12px;
+    color: white;
+    background: linear-gradient(135deg,var(--pink),var(--purple));
+    font-size: 13px;
+    font-weight: 800;
+    box-shadow: 0 10px 30px rgba(255,79,179,.18);
+}
+
+.success-modal {
+    text-align: center;
+}
+
+.success-check {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 17px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    color: white;
+    background: linear-gradient(135deg,var(--pink),var(--purple));
+    font-size: 29px;
+    box-shadow: 0 10px 35px rgba(255,79,179,.25);
+}
+
+.success-modal h2 {
+    font-size: 25px;
+}
+
+.success-modal p {
+    margin-bottom: 20px;
+}
+
+.toast {
+    position: fixed;
+    right: 25px;
+    bottom: 25px;
+    z-index: 200;
+    min-width: 260px;
+    padding: 14px 17px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: #19121f;
+    box-shadow: 0 20px 60px rgba(0,0,0,.45);
+    transform: translateY(120px);
+    opacity: 0;
+    pointer-events: none;
+    transition: .3s;
+}
+
+.toast.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.toast-title {
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.toast-message {
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+@media(max-width:900px) {
+    .quick-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .app-card {
+        flex-wrap: wrap;
+    }
+
+    .app-preview {
+        width: 100%;
+    }
+}
+
+@media(max-width:700px) {
+    .sidebar {
+        position: fixed;
+    }
+
+    .sidebar.collapsed {
+        width: 0;
+        padding: 20px 0;
+        overflow: hidden;
+    }
+
+    .content {
+        padding: 20px;
+    }
+
+    .hero {
+        padding: 28px;
+    }
+
+    .profile-name {
+        display: none;
+    }
+
+    .auth-box {
+        padding: 27px 22px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="auth-screen" id="authScreen">
+
+    <div class="auth-box">
+
+        <div class="auth-brand">
+            <img class="auth-logo" src="https://i.imgur.com/ImPuVgX.jpeg">
+            <h1>JulesLuvLauncher</h1>
+            <p>Your personal launcher</p>
+        </div>
+
+        <div class="auth-tabs">
+
+            <button class="auth-tab active" id="loginTab">
+                Login
+            </button>
+
+            <button class="auth-tab" id="signupTab">
+                Sign Up
+            </button>
+
+        </div>
+
+        <form class="auth-form active" id="loginForm">
+
+            <div class="auth-field">
+                <label>Username</label>
+                <input
+                    class="auth-input"
+                    id="loginUsername"
+                    type="text"
+                    placeholder="Enter your username"
+                    autocomplete="username"
+                >
+            </div>
+
+            <div class="auth-field">
+                <label>Password</label>
+                <input
+                    class="auth-input"
+                    id="loginPassword"
+                    type="password"
+                    placeholder="Enter your password"
+                    autocomplete="current-password"
+                >
+            </div>
+
+            <div class="auth-error" id="loginError"></div>
+
+            <button class="auth-submit" type="submit">
+                Login
+            </button>
+
+        </form>
+
+        <form class="auth-form" id="signupForm">
+
+            <div class="auth-field">
+                <label>Username</label>
+                <input
+                    class="auth-input"
+                    id="signupUsername"
+                    type="text"
+                    placeholder="Choose a username"
+                    autocomplete="username"
+                >
+            </div>
+
+            <div class="auth-field">
+                <label>Email</label>
+                <input
+                    class="auth-input"
+                    id="signupEmail"
+                    type="email"
+                    placeholder="Enter your email"
+                    autocomplete="email"
+                >
+            </div>
+
+            <div class="auth-field">
+                <label>Password</label>
+                <input
+                    class="auth-input"
+                    id="signupPassword"
+                    type="password"
+                    placeholder="Create a password"
+                    autocomplete="new-password"
+                >
+            </div>
+
+            <div class="auth-field">
+                <label>Confirm Password</label>
+                <input
+                    class="auth-input"
+                    id="signupConfirmPassword"
+                    type="password"
+                    placeholder="Confirm your password"
+                    autocomplete="new-password"
+                >
+            </div>
+
+            <div class="auth-error" id="signupError"></div>
+            <div class="auth-success" id="signupSuccess"></div>
+
+            <button class="auth-submit" type="submit">
+                Create Account
+            </button>
+
+        </form>
+
+        <div class="auth-footer">
+            By continuing, you agree to use <span>JulesLuvLauncher</span>.
+        </div>
+
+    </div>
+
+</div>
+
+<div class="app" id="launcherApp">
+
+<aside class="sidebar" id="sidebar">
+
+    <div class="brand">
+        <img class="brand-image" src="https://i.imgur.com/ImPuVgX.jpeg">
+        <div class="brand-name">JulesLuvLauncher</div>
+    </div>
+
+    <nav class="nav">
+
+        <button class="nav-button active" data-page="home">
+            <img class="nav-icon" src="assets/icons/home.png">
+            <span class="nav-text">Home</span>
+        </button>
+
+        <button class="nav-button" data-page="downloads">
+            <img class="nav-icon" src="assets/icons/downloads.png">
+            <span class="nav-text">Downloads</span>
+        </button>
+
+        <button class="nav-button" data-page="library">
+            <img class="nav-icon" src="assets/icons/library.png">
+            <span class="nav-text">Library</span>
+        </button>
+
+        <button class="nav-button" data-page="settings">
+            <img class="nav-icon" src="assets/icons/settings.png">
+            <span class="nav-text">Settings</span>
+        </button>
+
+    </nav>
+
+    <div class="sidebar-footer">
+
+        <div class="user-card">
+            <img class="user-avatar" src="https://i.imgur.com/ImPuVgX.jpeg">
+
+            <div class="user-info">
+                <div class="user-name" id="sidebarUsername">Jules</div>
+                <div class="user-status">● Online</div>
+            </div>
+        </div>
+
+    </div>
+
+</aside>
+
+<main class="main">
+
+<header class="topbar">
+
+    <div class="top-left">
+
+        <button class="menu-button" id="menuButton">
+            <img src="assets/icons/menu.png">
+        </button>
+
+        <div class="page-title" id="pageTitle">Home</div>
+
+    </div>
+
+    <div class="profile">
+        <span class="profile-name" id="profileUsername">Jules</span>
+        <img src="https://i.imgur.com/ImPuVgX.jpeg">
+    </div>
+
+</header>
+
+<section class="content">
+
+<div class="page active" id="home">
+
+    <div class="hero">
+
+        <div class="hero-content">
+
+            <div class="eyebrow">
+                <span class="status-dot"></span>
+                Launcher Online
+            </div>
+
+            <h1>
+                Welcome to
+                <span class="gradient">JulesLuvLauncher.</span>
+            </h1>
+
+            <p>
+                Your personal launcher for managing licensed applications,
+                downloads and active keys in one clean interface.
+            </p>
+
+            <div class="hero-buttons">
+
+                <button class="primary" onclick="showPage('library')">
+                    <img class="button-icon" src="assets/icons/launch.png">
+                    Open Library
+                </button>
+
+                <button class="secondary" onclick="openRedeem()">
+                    <img class="button-icon" src="assets/icons/key.png">
+                    Redeem Key
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="section-header">
+        <h2>Quick Access</h2>
+        <span>Manage your launcher</span>
+    </div>
+
+    <div class="quick-grid">
+
+        <div class="quick-card" onclick="showPage('downloads')">
+            <div class="quick-icon">
+                <img src="assets/icons/downloads.png">
+            </div>
+            <h3>Downloads</h3>
+            <p>Download applications and redeem license keys.</p>
+        </div>
+
+        <div class="quick-card" onclick="showPage('library')">
+            <div class="quick-icon">
+                <img src="assets/icons/library.png">
+            </div>
+            <h3>Your Library</h3>
+            <p>View applications attached to your active licenses.</p>
+        </div>
+
+        <div class="quick-card" onclick="showPage('settings')">
+            <div class="quick-icon">
+                <img src="assets/icons/settings.png">
+            </div>
+            <h3>Settings</h3>
+            <p>Customize the launcher experience.</p>
+        </div>
+
+    </div>
+
+</div>
+
+<div class="page" id="downloads">
+
+    <div class="section-header">
+        <h2>Downloads</h2>
+        <span>Applications & licenses</span>
+    </div>
+
+    <div class="download-header">
+
+        <button class="primary" onclick="openRedeem()">
+            <img class="button-icon" src="assets/icons/key.png">
+            Redeem Key
+        </button>
+
+    </div>
+
+    <div class="download-list">
+
+        <div class="download-card">
+
+            <div class="item-icon">
+                <img src="assets/icons/downloads.png">
+            </div>
+
+            <div class="item-info">
+                <div class="item-title">Redeem Cheat Key To Get A Menu</div>
+                <div class="item-description">
+                    Redeem a valid license key to unlock this application.
+                </div>
+            </div>
+
+            <button class="primary" onclick="openRedeem()">
+                <img class="button-icon" src="assets/icons/key.png">
+                Redeem
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="page" id="library">
+
+    <div class="section-header">
+        <h2>Your Library</h2>
+        <span id="libraryStatus">No active licenses</span>
+    </div>
+
+    <div id="libraryContainer"></div>
+
+</div>
+
+<div class="page" id="settings">
+
+    <div class="section-header">
+        <h2>Settings</h2>
+        <span>Launcher configuration</span>
+    </div>
+
+    <h3 class="setting-title">Appearance</h3>
+
+    <div class="settings-list">
+
+        <div class="setting-card">
+
+            <div class="setting-left">
+
+                <div class="item-icon">
+                    <img src="assets/icons/appearance.png">
+                </div>
+
+                <div>
+                    <div class="setting-name">Animations</div>
+                    <div class="setting-description">
+                        Enable launcher animations.
+                    </div>
+                </div>
+
+            </div>
+
+            <label class="toggle">
+                <input type="checkbox" id="animations" checked>
+                <span class="slider"></span>
+            </label>
+
+        </div>
+
+        <div class="setting-card">
+
+            <div class="setting-left">
+
+                <div class="item-icon">
+                    <img src="assets/icons/notifications.png">
+                </div>
+
+                <div>
+                    <div class="setting-name">Notifications</div>
+                    <div class="setting-description">
+                        Show launcher notifications.
+                    </div>
+                </div>
+
+            </div>
+
+            <label class="toggle">
+                <input type="checkbox" id="notifications" checked>
+                <span class="slider"></span>
+            </label>
+
+        </div>
+
+    </div>
+
+    <h3 class="setting-title">License</h3>
+
+    <div class="settings-list">
+
+        <div class="setting-card">
+
+            <div class="setting-left">
+
+                <div class="item-icon">
+                    <img src="assets/icons/key.png">
+                </div>
+
+                <div>
+                    <div class="setting-name">Active License</div>
+                    <div class="setting-description" id="licenseSetting">
+                        No active license.
+                    </div>
+                </div>
+
+            </div>
+
+            <button class="secondary" onclick="openRedeem()">
+                Redeem
+            </button>
+
+        </div>
+
+        <div class="setting-card">
+
+            <div class="setting-left">
+
+                <div class="item-icon">
+                    <img src="assets/icons/settings.png">
+                </div>
+
+                <div>
+                    <div class="setting-name">Reset Local Data</div>
+                    <div class="setting-description">
+                        Removes locally stored licenses and settings.
+                    </div>
+                </div>
+
+            </div>
+
+            <button class="danger" onclick="resetLauncher()">
+                Reset
+            </button>
+
+        </div>
+
+        <div class="setting-card">
+
+            <div class="setting-left">
+
+                <div class="item-icon">
+                    <img src="assets/icons/logout.png">
+                </div>
+
+                <div>
+                    <div class="setting-name">Log Out</div>
+                    <div class="setting-description">
+                        Log out of your JulesLuvLauncher account.
+                    </div>
+                </div>
+
+            </div>
+
+            <button class="danger" onclick="logout()">
+                Log Out
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+</section>
+
+</main>
+
+</div>
+
+<div class="modal-background" id="redeemModal">
+
+    <div class="redeem-modal">
+
+        <button class="close-modal" onclick="closeRedeem()">×</button>
+
+        <div class="redeem-icon">
+            <img src="assets/icons/key.png">
+        </div>
+
+        <h2>Redeem your key</h2>
+
+        <p>
+            Enter your JulesLuvLauncher license key below.
+            A successful redemption gives you access to
+            the cheat menu you bought for the said amount of days.
+        </p>
+
+        <input
+            class="key-input"
+            id="keyInput"
+            type="text"
+            maxlength="27"
+            placeholder="XXXXXXX-XXXXXXX-XXXXXXX-XXXXXXX"
+            autocomplete="off"
+            spellcheck="false"
+        >
+
+        <div class="key-error" id="keyError"></div>
+
+        <button class="redeem-submit" onclick="redeemKey()">
+            Redeem Key
+        </button>
+
+    </div>
+
+</div>
+
+<div class="modal-background" id="successModal">
+
+    <div class="redeem-modal success-modal">
+
+        <div class="success-check">✓</div>
+
+        <h2>Key redeemed!</h2>
+
+        <p>
+            JulesESP Menu has been added to your library.
+            Your license is active for 24 hours.
+        </p>
+
+        <button class="redeem-submit" onclick="closeSuccessAndLibrary()">
+            Open Library
+        </button>
+
+    </div>
+
+</div>
+
+<div class="toast" id="toast">
+
+    <div class="toast-title" id="toastTitle"></div>
+    <div class="toast-message" id="toastMessage"></div>
+
+</div>
+
+<script>
+
+const DOWNLOAD_URL = "YOUR_DIRECT_DOWNLOAD_URL_HERE";
+
+const VALID_KEYS = [
+"B0P91C-6VMISA-X7L0N7-07M4QU",
+"K7D42M-9QXELA-P3N8V2-61R5TJ",
+"F8L20Q-4ZKMWB-X9C7P1-83N6DA",
+"R3V71N-8HQLSX-M5T0K4-29P7YC",
+"N6A94K-2WJXMP-7D3LQ8-50V1FB",
+"Q1X58C-7NVRLA-4M9K2P-36T8DZ",
+"M9P43L-5CXTQW-8V2N7K-14R6YA",
+"T4K82V-1LQZMP-6X9C3N-75B0RJ",
+"H7N35Q-9MKLXA-2P8V6C-41D5TW",
+"X2R68M-4QNPVL-7K1Z9A-83C5HF",
+"C5V19P-8XQMLR-3N7K2D-64T0WA",
+"L8Z42N-6MPQXC-1V9K5R-27H3TB",
+"P3Q76K-2NXLVA-9C5M8D-40R1JW",
+"V1M58X-7KQZLP-4N3C9A-62D5HT",
+"D9L24R-5VNXKC-8Q2M7P-31Z6WA",
+"W6C83N-1RQLMV-5X9K2T-74P0DA",
+"A4K97M-8ZXPQL-2N6V1C-53R9TJ",
+"Y2N65V-4MQLXA-7K8P3D-10C9WF",
+"G8P31L-6VXQMR-9N2K5C-47T0ZA",
+"J5X72Q-1MKVLP-8C4N9R-63D0TB",
+"S7M46K-3QXNLV-5P2C8A-91R0JD",
+"E9V25N-7LKQMP-4X6Z1C-38T5WA",
+"U3C81R-9NXPVL-2K7M5Q-64D0TJ",
+"Z6K54P-1VQXLM-8N3C7R-20A9WF",
+"B7Q92X-5MKLVA-3P8N1C-46R0TD",
+"F2N68M-9XQKLP-7V4C5A-31D8RJ",
+"R8L35V-2MPXQN-6K9C1D-74T0WA",
+"N4C71Q-8ZKMLP-5X2V9R-63A0TJ",
+"Q9P26K-3VNXLA-1M7C8D-54R0WF",
+"M5X83N-7QKPLV-4C9R2A-16D0TJ",
+"T1V64M-8NLQXP-3K7C5R-92D0WA",
+"H9K27P-4XMVLQ-6N1C8D-35R0TJ",
+"X6Q48N-2KPLVA-9M5C3R-71D0WF",
+"C3M95V-7NXQKL-1P8K4A-62R0TJ",
+"L7P21Q-5VMXNR-8C3K9D-40A6WF",
+"P8N63K-1QXLVM-7R4C2A-95D0TJ",
+"V5K49M-9PQLXA-2N7C8R-31D0WF",
+"D2X76N-4MKVLP-8Q1C5A-69R0TJ",
+"W9C34P-6NXLQK-3V7M2R-15D0WA",
+"A7M82Q-1KPXVL-5N9C4D-63R0TJ",
+"Y4N57V-8QKMLP-2X6C9A-31D0WF",
+"G1P93L-5VXQNR-7K4M8C-62R0TJ",
+"J8X26Q-3NLVMP-9C5K1D-47R0WA",
+"S4M71K-6QXPLV-2N8C5R-93D0TJ",
+"E7V38N-1LKQXP-5M9C2A-64R0WF",
+"U9C52R-7NXPVL-4K1M8Q-36D0TJ",
+"Z3K86P-2VQXLM-9N5C7R-41A0WA",
+"B5Q14X-8MKLVA-6P2N9C-73R0TJ",
+"F9N47M-3XQKLP-1V8C5A-62D0WF",
+"R6L82V-5MPXQN-7K3C9D-14A0TJ",
+"N2C59Q-9ZKMLP-4X7V1R-63D0WA",
+"Q8P31K-6VNXLA-2M9C5D-47R0TJ",
+"M4X76N-1QKPLV-8C3R9A-25D0WF",
+"T9V42M-7NLQXP-5K1C8R-63D0TJ",
+"H3K85P-2XMVLQ-9N6C4D-71R0WA",
+"X7Q19N-5KPLVA-3M8C2R-64D0TJ",
+"C9M64V-1NXQKL-7P5K8A-32R0WF",
+"L2P87Q-4VMXNR-9C1K6D-53A0TJ",
+"P6N35K-8QXLVM-2R7C4A-91D0TJ",
+"V8K21M-3PQLXA-6N9C5R-47D0WA",
+"D5X94N-7MKVLP-1Q8C3A-62R0TJ",
+"W2C68P-9NXLQK-5V4M7R-31D0WF",
+"A8M43Q-6KPXVL-2N9C5D-71R0TJ",
+"Y1N76V-4QKMLP-8X3C9A-52D0WA",
+"G5P28L-9VXQNR-1K6M4C-73R0TJ",
+"J3X81Q-7NLVMP-5C2K9D-46R0WF",
+"S9M54K-1QXPLV-8N3C6R-27D0TJ",
+"E2V69N-5LKQXP-7M1C8A-34R0WA",
+"U6C37R-9NXPVL-2K5M8Q-61D0TJ",
+"Z8K42P-3VQXLM-7N1C5R-96A0WF",
+"B1Q75X-6MKLVA-9P4N2C-38R0TJ",
+"F7N23M-8XQKLP-5V1C9A-64D0WA",
+"R4L96V-2MPXQN-8K5C3D-71R0TJ",
+"N9C41Q-7ZKMLP-3X6V8R-25D0WF",
+"Q5P82K-1VNXLA-9M4C7D-63D0TJ",
+"M8X37N-6QKPLV-2C9R5A-41D0WA",
+"T3V95M-8NLQXP-4K7C1R-62D0TJ",
+"H6K28P-5XMVLQ-1N9C4D-73R0WF",
+"X9Q63N-3KPLVA-7M2C8R-51D0TJ",
+"C1M47V-9NXQKL-5P3K6A-82R0WA",
+"L5P93Q-2VMXNR-8C7K1D-64D0TJ",
+"P7N26K-4QXLVM-1R9C5A-38D0WF",
+"V2K84M-7PQLXA-3N6C9R-51D0TJ",
+"D8X51N-5MKVLP-2Q7C4A-93R0WA",
+"W4C79P-1NXLQK-8V3M6R-25D0TJ",
+"A9M36Q-7KPXVL-4N1C8D-62R0WF",
+"Y6N82V-3QKMLP-9X5C2A-47D0TJ",
+"G2P57L-8VXQNR-6K1M9C-34R0WA",
+"J7X43Q-5NLVMP-2C8K6D-91D0TJ",
+"S1M68K-9QXPLV-4N7C3R-52D0WF",
+"E5V24N-6LKQXP-8M2C9A-37R0TJ",
+"U8C91R-3NXPVL-5K7M4Q-62D0WA",
+"Z4K73P-1VQXLM-8N6C2R-95A0TJ",
+"B9Q46X-7MKLVA-3P1N8C-52R0WF",
+"F4N85M-2XQKLP-9V6C1A-37D0TJ",
+"R1L63V-8MPXQN-5K2C7D-94A0WA",
+"N7C29Q-4ZKMLP-1X8V5R-63D0TJ",
+"Q2P94K-6VNXLA-7M3C9D-51R0WF",
+"M9X58N-1QKPLV-4C7R2A-86D0TJ",
+"T6V31M-5NLQXP-9K4C8R-72D0WA",
+"H2K97P-8XMVLQ-3N5C1D-64R0TJ",
+"X5Q42N-7KPLVA-1M9C6R-38D0WF",
+"C8M73V-4NXQKL-2P5K9A-61R0TJ",
+"L1P86Q-9VMXNR-6C3K7D-52D0WA",
+"P4N59K-2QXLVM-8R1C6A-73D0TJ",
+"V7K24M-5PQLXA-9N3C8R-41R0WF",
+"D3X89N-1MKVLP-6Q5C2A-74R0TJ",
+"W8C52P-7NXLQK-4V9M1R-36D0WA",
+"A2M67Q-8KPXVL-5N4C9D-71R0TJ",
+"Y9N34V-1QKMLP-7X2C6A-58D0WF",
+"G6P81L-3VXQNR-9K5M2C-47R0TJ",
+"J1X75Q-6NLVMP-4C8K3D-92D0WA",
+"S8M39K-2QXPLV-7N5C1R-64R0TJ",
+"E4V72N-9LKQXP-3M6C8A-51R0WF",
+"U1C56R-5NXPVL-8K2M9Q-73D0TJ",
+"Z7K28P-4VQXLM-1N9C5R-62A0WA",
+"B3Q69X-8MKLVA-5P2N7C-41R0TJ",
+"F8N14M-6XQKLP-3V9C2A-75D0WF",
+"R5L87V-1MPXQN-9K4C6D-32A0TJ",
+"N1C76Q-5ZKMLP-8X3V9R-64D0WA",
+"Q7P35K-9VNXLA-2M6C1D-58R0TJ",
+"M2X91N-4QKPLV-7C5R8A-63D0WF",
+"T8V46M-3NLQXP-1K9C5R-72D0TJ",
+"H4K73P-6XMVLQ-8N2C9D-51R0WA",
+"X1Q68N-5KPLVA-4M7C2R-93D0TJ",
+"C6M25V-8NXQKL-3P9K1A-47D0WF",
+"L9P54Q-1VMXNR-7C5K8D-62D0TJ",
+"P2N83K-6QXLVM-4R9C1A-75D0WA",
+"V4K67M-9PQLXA-2N5C8R-31R0TJ",
+"D7X32N-3MKVLP-8Q1C6A-54D0WF",
+"W1C95P-5NXLQK-7V2M9R-63D0TJ",
+"A6M48Q-4KPXVL-9N3C5D-71R0TJ",
+"Y3N79V-8QKMLP-1X6C2A-54D0TJ",
+"G9P62L-2VXQNR-5K8M1C-37D0WF",
+"J4X86Q-7NLVMP-3C9K2D-61R0TJ",
+"S6M21K-5QXPLV-8N4C7R-93D0WA",
+"E8V53N-1LKQXP-6M9C2A-47R0TJ",
+"U4C78R-7NXPVL-3K1M5Q-62D0WF",
+"Z2K95P-8VQXLM-4N7C1R-53A0TJ",
+"B6Q31X-3MKLVA-9P5N8C-72R0WA",
+"F1N57M-7XQKLP-2V8C4A-63D0TJ",
+"R9L42V-5MPXQN-1K7C6D-38R0WF",
+"N5C68Q-2ZKMLP-9X4V1R-75D0TJ",
+"Q3P71K-8VNXLA-5M2C9D-46R0WA",
+"M7X24N-6QKPLV-3C8R1A-59D0TJ",
+"T2V89M-4NLQXP-7K5C3R-61D0WF",
+"H8K36P-1XMVLQ-9N4C7D-52R0TJ",
+"X4Q97N-5KPLVA-2M8C6R-31D0WA",
+"C7M41V-9NXQKL-4P2K8A-65R0TJ",
+"L3P82Q-7VMXNR-1C9K5D-46D0WF",
+"P9N57K-2QXLVM-6R4C8A-71D0TJ",
+"V1K63M-8PQLXA-5N2C7R-94D0WA",
+"D4X28N-6MKVLP-9Q3C1A-57R0TJ",
+"W7C84P-1NXLQK-5V6M2R-39D0WF",
+"A3M75Q-9KPXVL-2N8C4D-61R0TJ",
+"Y8N26V-5QKMLP-3X9C1A-74D0WA",
+"G4P93L-7VXQNR-1K6M8C-52R0TJ",
+"J9X51Q-2NLVMP-6C4K8D-37D0WF",
+"S3M67K-8QXPLV-5N1C9R-62R0TJ",
+"E1V84N-4LKQXP-7M3C5A-96D0WA",
+"U7C29R-9NXPVL-2K6M4Q-51D0TJ",
+"Z5K61P-3VQXLM-8N4C7R-92A0WF"
+];
+
+const sidebar = document.getElementById("sidebar");
+const pageTitle = document.getElementById("pageTitle");
+const redeemModal = document.getElementById("redeemModal");
+const successModal = document.getElementById("successModal");
+const keyInput = document.getElementById("keyInput");
+const keyError = document.getElementById("keyError");
+
+const authScreen = document.getElementById("authScreen");
+const loginTab = document.getElementById("loginTab");
+const signupTab = document.getElementById("signupTab");
+const loginForm = document.getElementById("loginForm");
+const signupForm = document.getElementById("signupForm");
+const loginError = document.getElementById("loginError");
+const signupError = document.getElementById("signupError");
+const signupSuccess = document.getElementById("signupSuccess");
+
+const pageNames = {
+    home: "Home",
+    downloads: "Downloads",
+    library: "Library",
+    settings: "Settings"
+};
+
+let license = JSON.parse(localStorage.getItem("julesLicense") || "null");
+
+function getAccounts() {
+    return JSON.parse(localStorage.getItem("julesAccounts") || "[]");
+}
+
+function saveAccounts(accounts) {
+    localStorage.setItem("julesAccounts", JSON.stringify(accounts));
+}
+
+function getLoggedInUser() {
+    return JSON.parse(localStorage.getItem("julesLoggedInUser") || "null");
+}
+
+function setLoggedInUser(user) {
+    localStorage.setItem("julesLoggedInUser", JSON.stringify(user));
+}
+
+function updateUserInterface() {
+    const user = getLoggedInUser();
+
+    if (!user) {
+        return;
+    }
+
+    document.getElementById("sidebarUsername").textContent = user.username;
+    document.getElementById("profileUsername").textContent = user.username;
+}
+
+function checkAuthentication() {
+    const user = getLoggedInUser();
+
+    if (user) {
+        authScreen.classList.add("hidden");
+        updateUserInterface();
+    } else {
+        authScreen.classList.remove("hidden");
+    }
+}
+
+loginTab.addEventListener("click", () => {
+    loginTab.classList.add("active");
+    signupTab.classList.remove("active");
+
+    loginForm.classList.add("active");
+    signupForm.classList.remove("active");
+
+    loginError.textContent = "";
+    signupError.textContent = "";
+    signupSuccess.textContent = "";
+});
+
+signupTab.addEventListener("click", () => {
+    signupTab.classList.add("active");
+    loginTab.classList.remove("active");
+
+    signupForm.classList.add("active");
+    loginForm.classList.remove("active");
+
+    loginError.textContent = "";
+    signupError.textContent = "";
+    signupSuccess.textContent = "";
+});
+
+loginForm.addEventListener("submit", event => {
+    event.preventDefault();
+
+    loginError.textContent = "";
+
+    const username = document.getElementById("loginUsername").value.trim();
+    const password = document.getElementById("loginPassword").value;
+
+    if (!username || !password) {
+        loginError.textContent = "Please enter your username and password.";
+        return;
+    }
+
+    const accounts = getAccounts();
+
+    const account = accounts.find(
+        user =>
+            user.username.toLowerCase() === username.toLowerCase() &&
+            user.password === password
+    );
+
+    if (!account) {
+        loginError.textContent = "Incorrect username or password.";
+        return;
+    }
+
+    setLoggedInUser({
+        username: account.username,
+        email: account.email
+    });
+
+    loginForm.reset();
+    updateUserInterface();
+    authScreen.classList.add("hidden");
+
+    showToast(
+        "Welcome back",
+        `Logged in as ${account.username}.`
+    );
+});
+
+signupForm.addEventListener("submit", event => {
+    event.preventDefault();
+
+    signupError.textContent = "";
+    signupSuccess.textContent = "";
+
+    const username = document.getElementById("signupUsername").value.trim();
+    const email = document.getElementById("signupEmail").value.trim();
+    const password = document.getElementById("signupPassword").value;
+    const confirmPassword = document.getElementById("signupConfirmPassword").value;
+
+    if (!username || !email || !password || !confirmPassword) {
+        signupError.textContent = "Please fill in every field.";
+        return;
+    }
+
+    if (username.length < 3) {
+        signupError.textContent = "Username must be at least 3 characters.";
+        return;
+    }
+
+    if (password.length < 6) {
+        signupError.textContent = "Password must be at least 6 characters.";
+        return;
+    }
+
+    if (password !== confirmPassword) {
+        signupError.textContent = "Passwords do not match.";
+        return;
+    }
+
+    const accounts = getAccounts();
+
+    const usernameExists = accounts.some(
+        user => user.username.toLowerCase() === username.toLowerCase()
+    );
+
+    if (usernameExists) {
+        signupError.textContent = "That username is already taken.";
+        return;
+    }
+
+    const emailExists = accounts.some(
+        user => user.email.toLowerCase() === email.toLowerCase()
+    );
+
+    if (emailExists) {
+        signupError.textContent = "That email is already registered.";
+        return;
+    }
+
+    const newAccount = {
+        username,
+        email,
+        password,
+        createdAt: Date.now()
+    };
+
+    accounts.push(newAccount);
+    saveAccounts(accounts);
+
+    setLoggedInUser({
+        username,
+        email
+    });
+
+    signupForm.reset();
+
+    updateUserInterface();
+
+    signupSuccess.textContent = "Account created successfully.";
+
+    setTimeout(() => {
+        authScreen.classList.add("hidden");
+
+        showToast(
+            "Account created",
+            `Welcome to JulesLuvLauncher, ${username}.`
+        );
+    }, 500);
+});
+
+function logout() {
+    const confirmed = confirm(
+        "Are you sure you want to log out?"
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    localStorage.removeItem("julesLoggedInUser");
+
+    authScreen.classList.remove("hidden");
+
+    loginTab.classList.add("active");
+    signupTab.classList.remove("active");
+
+    loginForm.classList.add("active");
+    signupForm.classList.remove("active");
+
+    loginForm.reset();
+    signupForm.reset();
+
+    loginError.textContent = "";
+    signupError.textContent = "";
+    signupSuccess.textContent = "";
+
+    showToast(
+        "Logged out",
+        "You have been logged out of JulesLuvLauncher."
+    );
+}
+
+function showPage(page) {
+    document.querySelectorAll(".page").forEach(p => {
+        p.classList.remove("active");
+    });
+
+    document.querySelectorAll(".nav-button").forEach(button => {
+        button.classList.remove("active");
+    });
+
+    const selected = document.getElementById(page);
+    const button = document.querySelector(`[data-page="${page}"]`);
+
+    if (selected) {
+        selected.classList.add("active");
+    }
+
+    if (button) {
+        button.classList.add("active");
+    }
+
+    pageTitle.textContent = pageNames[page] || "JulesLuvLauncher";
+
+    if (page === "library") {
+        renderLibrary();
+    }
+
+    updateLicenseStatus();
+}
+
+document.querySelectorAll(".nav-button").forEach(button => {
+    button.addEventListener("click", () => {
+        showPage(button.dataset.page);
+    });
+});
+
+document.getElementById("menuButton").addEventListener("click", () => {
+    sidebar.classList.toggle("collapsed");
+});
+
+function openRedeem() {
+    keyInput.value = "";
+    keyError.textContent = "";
+    redeemModal.classList.add("open");
+
+    setTimeout(() => {
+        keyInput.focus();
+    }, 150);
+}
+
+function closeRedeem() {
+    redeemModal.classList.remove("open");
+}
+
+function redeemKey() {
+    const entered = keyInput.value.trim().toUpperCase();
+
+    if (!entered) {
+        keyError.textContent = "Please enter a key.";
+        return;
+    }
+
+    if (!VALID_KEYS.includes(entered)) {
+        keyError.textContent = "That key is invalid.";
+        return;
+    }
+
+    if (license && license.key === entered && license.expiresAt > Date.now()) {
+        keyError.textContent = "This key is already active.";
+        return;
+    }
+
+    if (license && license.key !== entered && license.expiresAt > Date.now()) {
+        keyError.textContent = "You already have an active license.";
+        return;
+    }
+
+    const usedKeys = JSON.parse(
+        localStorage.getItem("julesUsedKeys") || "[]"
+    );
+
+    if (usedKeys.includes(entered)) {
+        keyError.textContent = "This key has already been redeemed on this browser.";
+        return;
+    }
+
+    const now = Date.now();
+    const expires = now + 24 * 60 * 60 * 1000;
+
+    license = {
+        key: entered,
+        appName: "JulesESP Menu",
+        fileName: "JulesESP Menu.exe",
+        redeemedAt: now,
+        expiresAt: expires,
+        running: false,
+        downloaded: false
+    };
+
+    usedKeys.push(entered);
+
+    localStorage.setItem("julesUsedKeys", JSON.stringify(usedKeys));
+    localStorage.setItem("julesLicense", JSON.stringify(license));
+
+    closeRedeem();
+    renderLibrary();
+    updateLicenseStatus();
+
+    successModal.classList.add("open");
+}
+
+function closeSuccessAndLibrary() {
+    successModal.classList.remove("open");
+    showPage("library");
+}
+
+function getRemaining() {
+    if (!license) {
+        return 0;
+    }
+
+    return Math.max(0, license.expiresAt - Date.now());
+}
+
+function formatTime(ms) {
+    if (ms <= 0) {
+        return "Expired";
+    }
+
+    const totalSeconds = Math.floor(ms / 1000);
+
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    if (days > 0) {
+        return `${days}d ${String(hours).padStart(2,"0")}h ${String(minutes).padStart(2,"0")}m`;
+    }
+
+    return `${String(hours).padStart(2,"0")}:${String(minutes).padStart(2,"0")}:${String(seconds).padStart(2,"0")}`;
+}
+
+function renderLibrary() {
+    const container = document.getElementById("libraryContainer");
+    const status = document.getElementById("libraryStatus");
+
+    if (!license) {
+        status.textContent = "No active licenses";
+
+        container.innerHTML = `
+            <div class="empty">
+                <img src="assets/icons/library.png">
+                <div>No applications are currently licensed.</div>
+                <div style="margin-top:7px;font-size:11px;">
+                    Redeem a key from Downloads to unlock a cheat Menu.
+                </div>
+            </div>
+        `;
+
+        return;
+    }
+
+    const expired = getRemaining() <= 0;
+
+    if (expired) {
+        license.running = false;
+        license.downloaded = false;
+        localStorage.setItem("julesLicense", JSON.stringify(license));
+    }
+
+    status.textContent = expired
+        ? "License expired"
+        : "1 active application";
+
+    container.innerHTML = `
+        <div class="app-card ${expired ? "locked" : ""}">
+
+            <div class="app-preview">
+                <div class="app-preview-overlay">
+                    <div class="app-preview-name">JulesESP Menu</div>
+                    <div class="app-preview-file">JulesESP Menu.exe</div>
+                </div>
+            </div>
+
+            <div class="app-details">
+
+                <div class="app-name">
+                    JulesESP Menu
+                </div>
+
+                <div class="file-name">
+                    File: JulesESP Menu.exe
+                </div>
+
+                <div class="license ${expired ? "expired" : ""}">
+                    <span class="license-dot"></span>
+                    ${
+                        expired
+                        ? "License expired"
+                        : `License: ${formatTime(getRemaining())}`
+                    }
+                </div>
+
+            </div>
+
+            <div class="app-actions">
+
+                ${
+                    expired
+                    ? `
+                        <button class="danger" onclick="removeExpiredLicense()">
+                            Remove
+                        </button>
+                    `
+                    : `
+                        <button
+                            class="primary"
+                            onclick="startApp()"
+                            ${license.running ? "disabled" : ""}
+                        >
+                            <img class="button-icon" src="assets/icons/play.png">
+                            Start
+                        </button>
+
+                        <button
+                            class="secondary"
+                            onclick="stopApp()"
+                            ${!license.running ? "disabled" : ""}
+                        >
+                            <img class="button-icon" src="assets/icons/stop.png">
+                            Stop
+                        </button>
+
+                        <button
+                            class="secondary"
+                            onclick="downloadApp()"
+                        >
+                            <img class="button-icon" src="assets/icons/downloads.png">
+                            Download
+                        </button>
+                    `
+                }
+
+            </div>
+
+        </div>
+    `;
+}
+
+function updateLicenseStatus() {
+    const remaining = getRemaining();
+    const setting = document.getElementById("licenseSetting");
+
+    if (!license) {
+        setting.textContent = "No active license.";
+        return;
+    }
+
+    if (remaining <= 0) {
+        setting.textContent = "JulesESP Menu license expired.";
+        return;
+    }
+
+    setting.textContent =
+        `JulesESP Menu — ${formatTime(remaining)} remaining.`;
+}
+
+function downloadApp() {
+    if (!license || getRemaining() <= 0) {
+        showToast("License expired", "Redeem a valid key to download this application.");
+        return;
+    }
+
+    if (DOWNLOAD_URL === "YOUR_DIRECT_DOWNLOAD_URL_HERE") {
+        showToast(
+            "Download URL missing",
+            "Replace DOWNLOAD_URL in the HTML with your direct file URL."
+        );
+        return;
+    }
+
+    const link = document.createElement("a");
+    link.href = DOWNLOAD_URL;
+    link.download = "JulesESP Menu.exe";
+    link.target = "_blank";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    license.downloaded = true;
+    localStorage.setItem("julesLicense", JSON.stringify(license));
+
+    showToast(
+        "Download started",
+        "JulesESP Menu is being downloaded."
+    );
+
+    renderLibrary();
+}
+
+function startApp() {
+    if (!license || getRemaining() <= 0) {
+        expireLicense();
+        return;
+    }
+
+    license.running = true;
+    localStorage.setItem("julesLicense", JSON.stringify(license));
+
+    renderLibrary();
+
+    showToast(
+        "JulesESP Menu",
+        "Start requested. Connect this function to your desktop launcher to launch the executable."
+    );
+}
+
+function stopApp() {
+    if (!license) {
+        return;
+    }
+
+    license.running = false;
+    localStorage.setItem("julesLicense", JSON.stringify(license));
+
+    renderLibrary();
+
+    showToast(
+        "JulesESP Menu",
+        "Stop requested."
+    );
+}
+
+function expireLicense() {
+    if (!license) {
+        return;
+    }
+
+    license.running = false;
+    license.downloaded = false;
+
+    localStorage.setItem("julesLicense", JSON.stringify(license));
+
+    renderLibrary();
+
+    showToast(
+        "License expired",
+        "Your JulesESP Menu license has expired."
+    );
+}
+
+function removeExpiredLicense() {
+    license = null;
+
+    localStorage.removeItem("julesLicense");
+
+    renderLibrary();
+    updateLicenseStatus();
+
+    showToast(
+        "Application removed",
+        "The expired license has been removed from your library."
+    );
+}
+
+function resetLauncher() {
+    const confirmed = confirm(
+        "Reset JulesLuvLauncher local data?\n\nThis will remove your local license and redeemed-key data."
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    localStorage.removeItem("julesLicense");
+    localStorage.removeItem("julesUsedKeys");
+
+    license = null;
+
+    renderLibrary();
+    updateLicenseStatus();
+
+    showToast(
+        "Reset complete",
+        "Local launcher data has been cleared."
+    );
+}
+
+function showToast(title, message) {
+    const toast = document.getElementById("toast");
+
+    document.getElementById("toastTitle").textContent = title;
+    document.getElementById("toastMessage").textContent = message;
+
+    toast.classList.add("show");
+
+    clearTimeout(window.toastTimer);
+
+    window.toastTimer = setTimeout(() => {
+        toast.classList.remove("show");
+    }, 3500);
+}
+
+document.getElementById("animations").addEventListener("change", event => {
+    document.body.style.setProperty(
+        "--animation-state",
+        event.target.checked ? "1" : "0"
+    );
+
+    localStorage.setItem(
+        "julesAnimations",
+        event.target.checked ? "1" : "0"
+    );
+});
+
+document.getElementById("notifications").addEventListener("change", event => {
+    localStorage.setItem(
+        "julesNotifications",
+        event.target.checked ? "1" : "0"
+    );
+});
+
+keyInput.addEventListener("keydown", event => {
+    if (event.key === "Enter") {
+        redeemKey();
+    }
+});
+
+redeemModal.addEventListener("click", event => {
+    if (event.target === redeemModal) {
+        closeRedeem();
+    }
+});
+
+successModal.addEventListener("click", event => {
+    if (event.target === successModal) {
+        successModal.classList.remove("open");
+    }
+});
+
+setInterval(() => {
+    if (!license) {
+        return;
+    }
+
+    if (getRemaining() <= 0) {
+        if (license.running || license.downloaded) {
+            expireLicense();
+        } else {
+            renderLibrary();
+        }
+
+        return;
+    }
+
+    if (document.getElementById("library").classList.contains("active")) {
+        renderLibrary();
+    }
+
+    updateLicenseStatus();
+}, 1000);
+
+renderLibrary();
+updateLicenseStatus();
+checkAuthentication();
+
+</script>
+
+</body>
+</html>
+
